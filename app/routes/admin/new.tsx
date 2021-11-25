@@ -1,9 +1,11 @@
-import { useActionData, Form, redirect } from "remix";
+import { useActionData, Form, redirect, useTransition } from "remix";
 import { createPost } from "~/post";
 import type { ActionFunction } from "remix";
 import invariant from "tiny-invariant";
 
 export const action:ActionFunction = async ({ request }) => {
+  await new Promise(res => setTimeout(res, 1000));
+
   const formData = await request.formData();
 
   const title = formData.get("title");
@@ -29,7 +31,8 @@ export const action:ActionFunction = async ({ request }) => {
 
 
 export default function NewPost() {
-  let errors = useActionData();
+  const errors = useActionData();
+  const  transition = useTransition()
 
   return (
     <Form method="post">
@@ -54,7 +57,11 @@ export default function NewPost() {
         <textarea rows={20} name="markdown" />
       </p>
       <p>
-        <button type="submit">Create Post</button>
+        <button type="submit">
+          {transition.submission
+            ? "Creating..."
+            : "Create Post"}
+        </button>
       </p>
     </Form>
   );
