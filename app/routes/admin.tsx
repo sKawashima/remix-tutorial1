@@ -2,21 +2,26 @@ import { Link, Outlet, useLoaderData } from "remix";
 import { getPosts } from "~/post";
 import type { Post } from "~/post";
 import adminStyles from "~/styles/admin.css";
+import { useState } from "react";
 
-export let links = () => {
+export const links = () => {
   return [{ rel: "stylesheet", href: adminStyles }];
 };
 
-export let loader = () => {
+export const loader = () => {
   return getPosts();
 };
 
 export default function Admin() {
-  let posts = useLoaderData<Post[]>();
+  const posts = useLoaderData<Post[]>();
+  const [count, setCount] = useState(0)
+  const test = () => {
+    console.log(window.innerHeight)
+  }
   return (
     <div className="admin">
       <nav>
-        <h1>Admin</h1>
+        <h1 onClick={test}>Admin</h1>
         <ul>
           {posts.map(post => (
             <li key={post.slug}>
@@ -24,6 +29,8 @@ export default function Admin() {
             </li>
           ))}
         </ul>
+        <p>count: {count}</p>
+        <button onClick={() => {setCount(count + 1)}}>add</button>
       </nav>
       <main>
         <Outlet />
